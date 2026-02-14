@@ -1,4 +1,7 @@
-# 🥽 Complete A-Frame VR Workshop Guide — Meta Quest 3s Edition
+#!/usr/bin/env python3
+"""Script to write the complete workshop guide with proper markdown formatting."""
+
+content = r'''# 🥽 Complete A-Frame VR Workshop Guide — Meta Quest 3s Edition
 
 > **📋 Workshop-Ready:** Every code chunk is copy-paste ready!
 > **🧒 Beginner-Friendly:** Explained like you're 15 and just started coding
@@ -2076,3 +2079,13 @@ Once students master the basics, explore these:
 **Hosting:** GitHub Pages + TinyURL (No Glitch!)
 
 **Hardware:** Meta Quest 3s
+'''
+
+filepath = r'c:\Users\teenw\ARCode\AR-VRWorkshop\meta-quest-3s-aframe-controller-guide.md'
+
+with open(filepath, 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print(f"File written successfully!")
+print(f"Total characters: {len(content)}")
+print(f"Total lines: {content.count(chr(10))}")

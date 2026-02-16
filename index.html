@@ -9,16 +9,25 @@
   <body>
     <a-scene>
 
-      <!-- ====== ASSET LOADING ====== -->
+      <!-- Assets -->
       <a-assets>
         <img id="wood" src="https://cdn.aframe.io/a-painter/images/wood.jpg">
         <img id="floor" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
         <img id="city-sky" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/city.jpg">
       </a-assets>
 
-      <!-- ====== CAMERA + CONTROLLERS ====== -->
+      <!-- Camera + Controls (Desktop & VR) -->
       <a-entity id="rig">
-        <a-entity camera position="0 1.6 0" look-controls></a-entity>
+        <a-entity camera position="0 1.6 0" look-controls wasd-controls>
+          <!-- Desktop mouse cursor -->
+          <a-cursor
+            color="#FFFFFF"
+            fuse="false"
+            raycaster="objects: .clickable; far: 20">
+          </a-cursor>
+        </a-entity>
+
+        <!-- VR Controllers -->
         <a-entity
           id="leftController"
           meta-touch-controls="hand: left"
@@ -35,11 +44,17 @@
         </a-entity>
       </a-entity>
 
-      <!-- ====== LIGHTS ====== -->
+      <!-- Lights -->
       <a-light type="ambient" color="#BBB" intensity="0.5"></a-light>
       <a-light type="directional" color="#FFF" intensity="0.8" position="-1 2 1"></a-light>
 
-      <!-- ====== CLICKABLE SCENE OBJECTS ====== -->
+      <!-- Scene Objects -->
+       <a-image src="https://raw.githubusercontent.com/alluringxstalwart/SourceYISL/main/Landscape.png" position="0 5 -10"
+      width="25" height="7.5"></a-image>
+    
+    <a-text value="Young Innovators STEM Lab" position="0 9.5 -10" align="center" color="white" font="mozillavr"
+      width="10" height="5" anchor="center">
+    </a-text>
       <a-box
         position="-2 0.5 -3"
         rotation="0 45 0"
@@ -65,7 +80,7 @@
         animation="property: scale; to: 1.3 1.3 1.3; dir: alternate; loop: true; dur: 800">
       </a-cylinder>
 
-      <!-- ====== ENVIRONMENT ====== -->
+      <!-- Environment -->
       <a-plane
         position="0 0 -4"
         rotation="-90 0 0"
@@ -76,7 +91,7 @@
 
       <a-sky src="#city-sky"></a-sky>
 
-      <!-- ====== FLOATING TITLE ====== -->
+      <!-- UI Text -->
       <a-text
         value="Welcome to VR Workshop!"
         position="0 3.5 -5"
@@ -86,19 +101,22 @@
       </a-text>
 
       <a-text
-        value="Point & click objects to change color!"
+        value="Click objects to change color! (WASD to move, Mouse to look)"
         position="0 0.5 -2"
         align="center"
         color="#AAAAAA"
-        width="4">
+        width="5">
       </a-text>
 
-      <!-- ====== INTERACTION SCRIPT ====== -->
+      <!-- Interaction Script -->
       <script>
         AFRAME.registerComponent('click-change-color', {
           init: function () {
             this.el.addEventListener('click', function () {
               var randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+              // Remove any texture so the color is visible (fixes the box)
+              this.removeAttribute('src');
+              this.setAttribute('material', 'src', '');
               this.setAttribute('color', randomColor);
             });
           }

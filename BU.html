@@ -1,464 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pole Position VR</title>
-    <!-- A-Frame 1.5.0 -->
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <!-- A-Frame Extras -->
-    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="utf-8">
+    <title>VR Workshop — Interactive Scene</title>
+    <meta name="description" content="A-Frame VR Workshop Demo — Meta Quest 3s">
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
 
-    <script>
-      // --- UTILS ---
-      // Generate a random float between min and max
-      function randomRange(min, max) {
-        return Math.random() * (max - min) + min;
-      }
+      <!-- Assets -->
+      <a-assets>
+        <img id="wood" src="https://cdn.aframe.io/a-painter/images/wood.jpg">
+        <img id="floor" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
+        <img id="city-sky" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/city.jpg">
+      </a-assets>
 
-      // --- GAME STATE & MANAGER ---
-      AFRAME.registerComponent('game-manager', {
-        init: function() {
-            this.ui = document.getElementById('game-ui');
-            this.hud = document.getElementById('hud-overlay');
-            this.startBtn = document.getElementById('start-btn');
-            this.car = document.getElementById('f1-car');
-            this.trackInfo = document.getElementById('track-generator');
-            
-            this.selectedColor = '#cc0000'; // Default Ferrari Red
-            this.selectedTrack = 'oval';
+      <!-- Camera + Controls (Desktop & VR) -->
+      <a-entity id="rig">
+        <a-entity camera position="0 1.6 0" look-controls wasd-controls>
+          <!-- Desktop mouse cursor -->
+          <a-cursor
+            color="#FFFFFF"
+            fuse="false"
+            raycaster="objects: .clickable; far: 20">
+          </a-cursor>
+        </a-entity>
 
-            // Bind UI clicks
-            document.querySelectorAll('.car-select').forEach(el => {
-                el.addEventListener('click', (e) => {
-                    // Visually select
-                    document.querySelectorAll('.car-select').forEach(b => b.classList.remove('ring-4', 'ring-white'));
-                    el.classList.add('ring-4', 'ring-white');
-                    this.selectedColor = el.getAttribute('data-color');
-                });
+        <!-- VR Controllers -->
+        <a-entity
+          id="leftController"
+          meta-touch-controls="hand: left"
+          laser-controls="hand: left"
+          raycaster="objects: .clickable; far: 20"
+          line="color: cyan">
+        </a-entity>
+        <a-entity
+          id="rightController"
+          meta-touch-controls="hand: right"
+          laser-controls="hand: right"
+          raycaster="objects: .clickable; far: 20"
+          line="color: magenta">
+        </a-entity>
+      </a-entity>
+
+      <!-- Lights -->
+      <a-light type="ambient" color="#BBB" intensity="0.5"></a-light>
+      <a-light type="directional" color="#FFF" intensity="0.8" position="-1 2 1"></a-light>
+
+      <!-- Scene Objects -->
+       <a-image src="https://raw.githubusercontent.com/alluringxstalwart/SourceYISL/main/Landscape.png" position="0 5 -10"
+      width="25" height="7.5"></a-image>
+    
+    <a-text value="Young Innovators STEM Lab" position="0 9.5 -10" align="center" color="white" font="mozillavr"
+      width="10" height="5" anchor="center">
+    </a-text>
+      <a-box
+        position="-2 0.5 -3"
+        rotation="0 45 0"
+        src="#wood"
+        class="clickable"
+        animation="property: rotation; to: 0 405 0; loop: true; dur: 5000">
+      </a-box>
+
+      <a-sphere
+        position="0 1.25 -5"
+        radius="1.25"
+        color="#EF2D5E"
+        class="clickable"
+        animation="property: position; to: 0 2.5 -5; dir: alternate; loop: true; dur: 1500">
+      </a-sphere>
+
+      <a-cylinder
+        position="2 0.75 -3"
+        radius="0.5"
+        height="1.5"
+        color="#FFC65D"
+        class="clickable"
+        animation="property: scale; to: 1.3 1.3 1.3; dir: alternate; loop: true; dur: 800">
+      </a-cylinder>
+
+      <!-- Environment -->
+      <a-plane
+        position="0 0 -4"
+        rotation="-90 0 0"
+        width="20"
+        height="20"
+        src="#floor">
+      </a-plane>
+
+      <a-sky src="#city-sky"></a-sky>
+
+      <!-- UI Text -->
+      <a-text
+        value="Welcome to VR Workshop!"
+        position="0 3.5 -5"
+        align="center"
+        color="#FFFFFF"
+        width="8">
+      </a-text>
+
+      <a-text
+        value="Click objects to change color! (WASD to move, Mouse to look)"
+        position="0 0.5 -2"
+        align="center"
+        color="#AAAAAA"
+        width="5">
+      </a-text>
+
+      <!-- Interaction Script -->
+      <script>
+        AFRAME.registerComponent('click-change-color', {
+          init: function () {
+            this.el.addEventListener('click', function () {
+              var randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+              // Remove any texture so the color is visible (fixes the box)
+              this.removeAttribute('src');
+              this.setAttribute('material', 'src', '');
+              this.setAttribute('color', randomColor);
             });
-
-            document.querySelectorAll('.track-select').forEach(el => {
-                el.addEventListener('click', (e) => {
-                    document.querySelectorAll('.track-select').forEach(b => b.classList.remove('bg-red-600'));
-                    el.classList.add('bg-red-600');
-                    this.selectedTrack = el.getAttribute('data-track');
-                });
-            });
-
-            this.startBtn.addEventListener('click', () => this.startGame());
-        },
-
-        startGame: function() {
-            // Unlock Audio
-            const soundComp = this.car.components['car-sound'];
-            if(soundComp) soundComp.unlockAudio();
-
-            // Hide Menu, Show HUD
-            this.ui.classList.add('hidden');
-            this.hud.classList.remove('hidden');
-
-            // Apply Car Color
-            const carModel = document.getElementById('car-body-mesh');
-            const carNose = document.getElementById('car-nose-mesh');
-            if(carModel) carModel.setAttribute('color', this.selectedColor);
-            if(carNose) carNose.setAttribute('color', this.selectedColor);
-
-            // Generate Track
-            const trackComp = this.trackInfo.components['track-system'];
-            if(trackComp) {
-                trackComp.generate(this.selectedTrack);
-                
-                // Teleport car to start
-                const startPos = trackComp.getStartTransform();
-                const physics = this.car.components['f1-physics'];
-                
-                // Set Position
-                this.car.object3D.position.copy(startPos.position);
-                // Set Rotation (ensure we face the right way)
-                this.car.object3D.rotation.y = Math.atan2(
-                    startPos.direction.x, 
-                    startPos.direction.z
-                ) + Math.PI; // Adjust for model orientation if needed
-                
-                // Reset Physics
-                if(physics) physics.resetCar(true); // true = maintain position
-            }
-        }
-      });
-
-      // --- TRACK SYSTEM (Spline Based) ---
-      AFRAME.registerComponent('track-system', {
-        init: function() {
-            this.curve = null;
-            this.trackWidth = 14; 
-        },
-
-        generate: function(type) {
-            // Clear old track
-            while(this.el.firstChild) this.el.removeChild(this.el.firstChild);
-
-            let points = [];
-            
-            if (type === 'oval') {
-                // Simple Oval
-                points = [
-                    new THREE.Vector3(50, 0, 0),
-                    new THREE.Vector3(20, 0, 80),
-                    new THREE.Vector3(-20, 0, 80),
-                    new THREE.Vector3(-50, 0, 0),
-                    new THREE.Vector3(-20, 0, -80),
-                    new THREE.Vector3(20, 0, -80),
-                ];
-            } else {
-                // "The Serpent" - Complex
-                points = [
-                    new THREE.Vector3(0, 0, 0),
-                    new THREE.Vector3(0, 0, 100),
-                    new THREE.Vector3(80, 0, 150),
-                    new THREE.Vector3(120, 0, 100),
-                    new THREE.Vector3(100, 0, 0),
-                    new THREE.Vector3(150, 0, -100),
-                    new THREE.Vector3(50, 0, -150),
-                    new THREE.Vector3(-50, 0, -100),
-                    new THREE.Vector3(-100, 0, 0),
-                    new THREE.Vector3(-50, 0, 50),
-                ];
-            }
-
-            // Close the loop
-            this.curve = new THREE.CatmullRomCurve3(points);
-            this.curve.closed = true;
-
-            const samples = 400; 
-            const tubeGeometry = new THREE.TubeGeometry(this.curve, samples, this.trackWidth / 2, 8, true);
-            
-            // WE NEED A FLAT TRACK, NOT A TUBE
-            // Manual mesh generation for a flat road ribbon
-            const spacedPoints = this.curve.getSpacedPoints(samples);
-            this.frenetFrames = this.curve.computeFrenetFrames(samples, true);
-            
-            // Build visual elements
-            this.buildVisuals(spacedPoints, this.frenetFrames);
-            this.spawnCrowd(spacedPoints, this.frenetFrames);
-        },
-
-        buildVisuals: function(points, frames) {
-            // Because creating custom BufferGeometry in A-Frame raw JS is verbose, 
-            // we will approximate the track with many small planes/boxes for the floor
-            // A better approach for "Production" is Custom Geometry, but let's use small segments for simplicity in DOM.
-            
-            // Actually, let's use a single mesh for performance (constructing THREE.Mesh)
-            const geometry = new THREE.BufferGeometry();
-            const vertices = [];
-            const colors = [];
-            const uvs = [];
-            const indices = [];
-
-            const width = this.trackWidth;
-            
-            for (let i = 0; i < points.length; i++) {
-                const p = points[i];
-                const nextP = points[(i + 1) % points.length];
-                const tangent = frames.tangents[i];
-                const normal = frames.normals[i];
-                const binormal = frames.binormals[i];
-
-                // Left and Right points
-                // binormal is the vector pointing "sideways"
-                const left = new THREE.Vector3().copy(p).add(binormal.clone().multiplyScalar(width/2));
-                const right = new THREE.Vector3().copy(p).add(binormal.clone().multiplyScalar(-width/2));
-
-                vertices.push(left.x, left.y + 0.05, left.z);
-                vertices.push(right.x, right.y + 0.05, right.z);
-                
-                // Color (Asphalt dark grey)
-                colors.push(0.2, 0.2, 0.2);
-                colors.push(0.2, 0.2, 0.2);
-            }
-
-            // Create faces
-            for (let i = 0; i < points.length; i++) {
-                const currentLeft = i * 2;
-                const currentRight = i * 2 + 1;
-                const nextLeft = ((i + 1) % points.length) * 2;
-                const nextRight = ((i + 1) % points.length) * 2 + 1;
-
-                // Tri 1
-                indices.push(currentLeft, nextLeft, currentRight);
-                // Tri 2
-                indices.push(nextLeft, nextRight, currentRight);
-            }
-
-            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-            geometry.setIndex(indices);
-            geometry.computeVertexNormals();
-
-            const material = new THREE.MeshStandardMaterial({ 
-                color: 0xffffff, 
-                vertexColors: true,
-                roughness: 0.8 
-            });
-            const mesh = new THREE.Mesh(geometry, material);
-            this.el.setObject3D('mesh', mesh);
-
-            // Add Kerbs (Separate entities for simplicity/visual pop)
-            for (let i = 0; i < points.length; i+=5) { // every 5th segment
-                if (i >= points.length) break;
-                
-                const p = points[i];
-                const binormal = frames.binormals[i];
-                
-                // Left Kerb
-                const kerbL = document.createElement('a-box');
-                const kPosL = new THREE.Vector3().copy(p).add(binormal.clone().multiplyScalar((width/2) + 0.5));
-                kerbL.setAttribute('position', kPosL);
-                kerbL.setAttribute('width', 1);
-                kerbL.setAttribute('height', 0.2);
-                kerbL.setAttribute('depth', 2);
-                kerbL.setAttribute('color', (i/5)%2===0 ? 'red' : 'white');
-                kerbL.setAttribute('look-at', `0 0 0`); // Placeholder, updated below
-                
-                // Right Kerb
-                const kerbR = document.createElement('a-box');
-                const kPosR = new THREE.Vector3().copy(p).add(binormal.clone().multiplyScalar(-(width/2) - 0.5));
-                kerbR.setAttribute('position', kPosR);
-                kerbR.setAttribute('width', 1);
-                kerbR.setAttribute('height', 0.2);
-                kerbR.setAttribute('depth', 2);
-                kerbR.setAttribute('color', (i/5)%2===0 ? 'white' : 'red');
-
-                // Align rotation roughly to track
-                // A bit hacky without calculating exact Euler from frames
-                const tangent = frames.tangents[i];
-                const angle = Math.atan2(tangent.x, tangent.z);
-                const deg = angle * (180/Math.PI);
-                
-                kerbL.setAttribute('rotation', `0 ${deg} 0`);
-                kerbR.setAttribute('rotation', `0 ${deg} 0`);
-
-                this.el.appendChild(kerbL);
-                this.el.appendChild(kerbR);
-            }
-        },
-
-        spawnCrowd: function(points, frames) {
-            // Place crowd clusters
-            for(let i=0; i<points.length; i+=15) {
-                const p = points[i];
-                const binormal = frames.binormals[i];
-                
-                // Pick a side (Left or Right)
-                const side = Math.random() > 0.5 ? 1 : -1;
-                const dist = (this.trackWidth/2) + 4 + Math.random() * 2;
-                
-                const pos = new THREE.Vector3().copy(p).add(binormal.clone().multiplyScalar(side * dist));
-
-                // Create a "Grandstand" block
-                const stand = document.createElement('a-entity');
-                stand.setAttribute('position', pos);
-                const tangent = frames.tangents[i];
-                const angle = Math.atan2(tangent.x, tangent.z);
-                stand.setAttribute('rotation', `0 ${angle * (180/Math.PI) + (side===1?-90:90)} 0`);
-
-                // Crowd Members
-                for(let j=0; j<5; j++) {
-                    const human = document.createElement('a-cylinder');
-                    human.setAttribute('position', `${(j-2)*0.6} 1 ${0}`);
-                    human.setAttribute('radius', 0.25);
-                    human.setAttribute('height', 0.8 + Math.random()*0.2);
-                    // Random bright colors
-                    const color = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'][Math.floor(Math.random()*5)];
-                    human.setAttribute('color', color);
-                    
-                    // Add animation (Cheering/Jumping)
-                    human.setAttribute('animation', `property: position; to: ${(j-2)*0.6} 1.5 0; dir: alternate; dur: ${400 + Math.random()*200}; loop: true; easing: easeInOutQuad`);
-                    
-                    stand.appendChild(human);
-                }
-                
-                this.el.appendChild(stand);
-            }
-        },
-
-        getStartTransform: function() {
-            if (!this.curve) return { position: new THREE.Vector3(0,0,0), direction: new THREE.Vector3(0,0,1) };
-            const p = this.curve.getPointAt(0);
-            const t = this.curve.getTangentAt(0);
-            return { position: new THREE.Vector3(p.x, p.y + 0.2, p.z), direction: t };
-        },
-
-        // Returns distance from center line. 0 = center.
-        getDistanceFromCenter: function(position) {
-            if (!this.curve) return 0;
-            // Finding the closest point on a curve is expensive to do perfectly every frame.
-            // We approximate by checking divisions.
-            // Optimized: In a real engine we'd use spatial partition. Here we just scan 100 points.
-            // Or better: Assume the car moves along the track index.
-            
-            // Simplified fallback: Just check distance to 0,0 for oval? No, curve is complex.
-            // Let's iterate coarse samples.
-            let minD = Infinity;
-            // Optimization: We could track "current segment index" in physics to only check neighbors.
-            
-            // Fast scan
-            const divisions = 50; 
-            for(let i=0; i<=divisions; i++) {
-                const t = i/divisions;
-                const p = this.curve.getPointAt(t);
-                const d = p.distanceToSquared(position);
-                if(d < minD) minD = d;
-            }
-            return Math.sqrt(minD);
-        }
-      });
-
-      // --- CAR SOUND COMPONENT ---
-      AFRAME.registerComponent('car-sound', {
-          init: function() {
-             this.audioCtx = null;
-             this.engineOsc = null;
-             this.engineGain = null;
-          },
-          unlockAudio: function() {
-              const AudioContext = window.AudioContext || window.webkitAudioContext;
-              if (AudioContext) {
-                 this.audioCtx = new AudioContext();
-                 
-                 // Engine Synth
-                 this.engineOsc = this.audioCtx.createOscillator();
-                 this.engineGain = this.audioCtx.createGain();
-                 this.engineOsc.type = 'sawtooth';
-                 this.engineOsc.frequency.value = 100;
-                 this.engineOsc.connect(this.engineGain);
-                 this.engineGain.connect(this.audioCtx.destination);
-                 this.engineGain.gain.value = 0.0;
-                 this.engineOsc.start();
-              }
-          },
-          updateSound: function(rpm, load) {
-              if(!this.audioCtx || !this.engineOsc) return;
-              
-              const baseFreq = 70;
-              // RPM maps 0..12000 -> Freq 70..600
-              const freq = baseFreq + (rpm * 0.04);
-              this.engineOsc.frequency.setTargetAtTime(freq, this.audioCtx.currentTime, 0.1);
-              
-              // Volume shake
-              const vol = 0.1 + (load * 0.1);
-              this.engineGain.gain.setTargetAtTime(vol, this.audioCtx.currentTime, 0.1);
           }
-      });
+        });
 
-      // --- F1 PHYSICS COMPONENT (UPDATED) ---
-      AFRAME.registerComponent('f1-physics', {
-        schema: {
-          acceleration: { type: 'number', default: 45 },
-          braking: { type: 'number', default: 90 },
-          maxSpeed: { type: 'number', default: 90 },
-          friction: { type: 'number', default: 0.5 },
-          drag: { type: 'number', default: 0.02 },
-          turnSpeed: { type: 'number', default: 2.2 }
-        },
-
-        init: function () {
-          this.velocity = new THREE.Vector3(0, 0, 0);
-          this.speed = 0;
-          this.rpm = 0;
-          this.viewMode = 'cockpit';
-          
-          this.inputs = { forward: false, backward: false, left: false, right: false, steerValue: 0, gasValue: 0, brakeValue: 0 };
-
-          this.cockpitCam = document.querySelector('#cam-cockpit');
-          this.chaseCam = document.querySelector('#cam-chase');
-          this.frontWheels = document.querySelectorAll('.wheel-front');
-          this.speedLines = document.querySelector('#speed-lines');
-          this.hudSpeed = document.querySelector('#hud-speed');
-          this.hudRpmBar = document.querySelector('#hud-rpm-bar');
-          this.trackSystem = document.querySelector('[track-system]').components['track-system'];
-          
-          this.bindKeys();
-        },
-
-        bindKeys: function () {
-          window.addEventListener('keydown', (e) => {
-            switch(e.key.toLowerCase()) {
-              case 'w': this.inputs.forward = true; break;
-              case 's': this.inputs.backward = true; break;
-              case 'a': this.inputs.left = true; break;
-              case 'd': this.inputs.right = true; break;
-              case 'v': this.toggleCamera(); break;
-              case 'r': this.resetCar(); break;
-            }
+        document.addEventListener('DOMContentLoaded', function () {
+          document.querySelectorAll('.clickable').forEach(function (obj) {
+            obj.setAttribute('click-change-color', '');
           });
-          window.addEventListener('keyup', (e) => {
-            switch(e.key.toLowerCase()) {
-              case 'w': this.inputs.forward = false; break;
-              case 's': this.inputs.backward = false; break;
-              case 'a': this.inputs.left = false; break;
-              case 'd': this.inputs.right = false; break;
-            }
-          });
-          this.el.sceneEl.addEventListener('abuttondown', () => this.toggleCamera());
-          this.el.sceneEl.addEventListener('bbuttondown', () => this.resetCar());
-        },
+        });
+      </script>
 
-        toggleCamera: function () {
-          this.viewMode = this.viewMode === 'cockpit' ? 'chase' : 'cockpit';
-          if (this.viewMode === 'cockpit') {
-            this.cockpitCam.setAttribute('active', true);
-            this.chaseCam.setAttribute('active', false);
-          } else {
-            this.cockpitCam.setAttribute('active', false);
-            this.chaseCam.setAttribute('active', true);
-          }
-        },
-
-        resetCar: function (keepPosition = false) {
-            if(!keepPosition) {
-                // If fell off world
-                const start = this.trackSystem.getStartTransform();
-                this.el.object3D.position.copy(start.position);
-                this.el.object3D.rotation.y = Math.atan2(start.direction.x, start.direction.z) + Math.PI;
-            }
-            this.velocity.set(0,0,0);
-            this.speed = 0;
-        },
-
-        tick: function (time, timeDelta) {
-          const dt = timeDelta / 1000;
-          if (dt > 0.1) return;
-
-          this.pollControllers();
-
-          // Input processing
-          let throttle = this.inputs.forward ? 1 : this.inputs.gasValue;
-          let brake = this.inputs.backward ? 1 : this.inputs.brakeValue;
-
-          // Physics Vectors
-          const forwardDir = new THREE.Vector3(0, 0, -1).applyQuaternion(this.el.object3D.quaternion);
-          
-          // --- OFF-TRACK LOGIC ---
-          // Check track limits
-          const distanceFromCenter = this.trackSystem.getDistanceFromCenter(this.el.object3D.position);
-          const limit = (this.trackSystem.trackWidth / 2) - 1.0; 
-          const isOffTrack = distanceFromCenter > limit;
-          
-          // Surface Friction
-          let currentFriction = this.data.friction;
-          let currentDrag = this.data.drag;
-          
-          if (isOffTrack) {
-             // Gravel Trap Effect
-             currentFriction = 5.0; // Huge rolling resistance
-             currentDrag = 0.5;
-             throttle *= 0.2; // Power cut
-             // Visual shake could be added here
-          }
-
-          // Acceleration
-          if (throttle > 0 && this.speed < this.data.maxSpeed) {
-            
+    </a-scene>
+  </body>
+</html>

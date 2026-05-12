@@ -140,10 +140,11 @@ Once you're comfortable with the starter, level up to the **full workshop scene*
 
 ```
 AR-VRWorkshop/
-├── index.html               ← Full interactive VR scene (open this!)
-├── Code Chunks.md           ← 🧱 Copy-paste code chunks for students
-├── COMPLETE-WORKSHOP-GUIDE.md ← 📖 Full step-by-step workshop guide
-└── README.md                ← 📄 You are here
+ ├── index.html               ← Full interactive VR scene (open this!)
+ ├── Code Chunks.md           ← 🧱 Copy-paste code chunks for students
+ ├── COMPLETE-WORKSHOP-GUIDE.md ← 📖 Full step-by-step workshop guide
+ ├── KIDS-WORKSHOP-GUIDE.md   ← 🧒 Kid-friendly guide (ages 13–16)
+ └── README.md                ← 📄 You are here
 ```
 
 | File | Who It's For | What It Does |
@@ -151,6 +152,7 @@ AR-VRWorkshop/
 | **`index.html`** | Everyone | The main VR scene — open in browser or Quest |
 | **`Code Chunks.md`** | Students | 20 numbered, copyable code blocks with comments |
 | **`COMPLETE-WORKSHOP-GUIDE.md`** | Instructors & Students | Full workshop from zero to hero (17 parts) |
+| **`KIDS-WORKSHOP-GUIDE.md`** | Ages 13–16 | Shorter, simpler guide with extra real-life examples |
 
 ---
 

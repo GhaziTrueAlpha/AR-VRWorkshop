@@ -71,6 +71,28 @@
 
 **Use Code Chunk:** **#1 Starter Template** in [Code Chunks.md](Code%20Chunks.md)
 
+Simplest template (copy first):
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>My VR Scene</title>
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene></a-scene>
+  </body>
+</html>
+```
+
+What to do using this template:
+1. Save the file as **`index.html`**
+2. Open it in Chrome to make sure the scene loads
+3. Add shapes inside `<a-scene>` (see Part 3)
+4. Change colors, positions, and sizes to make it yours
+
 Quick starter (copy once):
 
 ```html
@@ -355,6 +377,18 @@ Steps:
 1. Make a **space scene** with dark sky, bright stars, and a spinning planet.
 2. Build a **school hallway** with signs for classrooms.
 3. Create a **mini game**: click 3 objects to turn them all green.
+
+---
+
+## 🤖 Go Further with Copilot or Anti Gravity AI
+
+If you have **Copilot** or **Anti Gravity AI**, use them to get ideas and speed up changes:
+
+- Ask for **new object ideas** (e.g., “Give me a simple tree made of shapes”)
+- Ask for **color palettes** or themes (space, underwater, neon city)
+- Ask for **small code chunks** (like a spinning sign or glowing orb)
+
+Always paste the result into your `index.html` and **test in the browser** to make sure it works.
 
 ---
 

@@ -382,7 +382,7 @@ Steps:
 
 ## 🤖 Go Further with Copilot or Anti Gravity AI
 
-If you have **Copilot** or **Anti Gravity AI**, use them to get ideas and speed up changes:
+If your class provides **Copilot** or **Anti Gravity AI** (an AI helper), use them to get ideas and speed up changes. If you’re not sure how to access them, ask your instructor.
 
 - Ask for **new object ideas** (e.g., “Give me a simple tree made of shapes”)
 - Ask for **color palettes** or themes (space, underwater, neon city)

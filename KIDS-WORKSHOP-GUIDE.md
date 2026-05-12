@@ -89,6 +89,26 @@ Quick starter (copy once):
 </html>
 ```
 
+Simpler explained version (with comments):
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>My VR Scene</title>
+    <!-- Loads the A-Frame engine (so VR tags work) -->
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+  </head>
+  <body>
+    <!-- This is the VR room -->
+    <a-scene>
+      <!-- Put your shapes here -->
+    </a-scene>
+  </body>
+</html>
+```
+
 ---
 
 <a name="part-3"></a>
@@ -108,6 +128,19 @@ Try a few and change the colors:
 <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
 ```
 
+Simpler explained version (with comments):
+
+```html
+<!-- A cube floating in front of you -->
+<a-box position="-1 0.5 -3" color="#4CC3D9"></a-box>
+
+<!-- A ball a little higher up -->
+<a-sphere position="0 1.25 -4" radius="1.25" color="#EF2D5E"></a-sphere>
+
+<!-- A tall can on the right -->
+<a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+```
+
 ---
 
 <a name="part-4"></a>
@@ -121,6 +154,18 @@ Try a few and change the colors:
 
 Tip: textures are just images that “paint” your shapes.
 
+Simpler explained version (with comments):
+
+```html
+<!-- Load a texture image first -->
+<a-assets>
+  <img id="wood" src="https://cdn.aframe.io/a-painter/images/wood.jpg">
+</a-assets>
+
+<!-- Use the texture on a box -->
+<a-box position="0 1 -3" src="#wood"></a-box>
+```
+
 ---
 
 <a name="part-5"></a>
@@ -131,6 +176,16 @@ Tip: textures are just images that “paint” your shapes.
 **Real-life example:** Like setting a wallpaper and a floor in your room.
 
 **Use Code Chunk:** **#8 Floor + Sky**
+
+Simpler explained version (with comments):
+
+```html
+<!-- The ground you stand on -->
+<a-plane position="0 0 -4" rotation="-90 0 0" width="8" height="8" color="#7BC8A4"></a-plane>
+
+<!-- The background color of the world -->
+<a-sky color="#CCE7FF"></a-sky>
+```
 
 ---
 
@@ -145,6 +200,16 @@ Tip: textures are just images that “paint” your shapes.
 
 Try changing light color to match a mood (blue = night, orange = sunset).
 
+Simpler explained version (with comments):
+
+```html
+<!-- Soft light everywhere -->
+<a-light type="ambient" color="#FFFFFF" intensity="0.5"></a-light>
+
+<!-- Sunlight from above -->
+<a-light type="directional" color="#FFF6D6" intensity="0.8" position="1 3 2"></a-light>
+```
+
 ---
 
 <a name="part-7"></a>
@@ -155,6 +220,13 @@ Try changing light color to match a mood (blue = night, orange = sunset).
 **Real-life example:** Like labels in a museum or a scoreboard in a game.
 
 **Use Code Chunk:** **#9 Text Labels**
+
+Simpler explained version (with comments):
+
+```html
+<!-- Floating text sign -->
+<a-text value="Welcome to my VR world!" position="0 2 -3" align="center" color="#FFFFFF"></a-text>
+```
 
 ---
 
@@ -167,6 +239,15 @@ Try changing light color to match a mood (blue = night, orange = sunset).
 
 **Use Code Chunk:** **#11 Animations**
 
+Simpler explained version (with comments):
+
+```html
+<!-- Spin a box forever -->
+<a-box position="0 1 -3" color="#4CC3D9"
+  animation="property: rotation; to: 0 360 0; loop: true; dur: 3000">
+</a-box>
+```
+
 ---
 
 <a name="part-9"></a>
@@ -177,6 +258,13 @@ Try changing light color to match a mood (blue = night, orange = sunset).
 **Real-life example:** Games play a “click” sound when you press a button.
 
 **Use Code Chunk:** **#14 Click to Play Sound**
+
+Simpler explained version (with comments):
+
+```html
+<!-- Background sound that starts on load -->
+<a-entity sound="src: url(https://cdn.aframe.io/basic-guide/audio/backgroundnoise.wav); autoplay: true; loop: true; volume: 0.3"></a-entity>
+```
 
 ---
 
